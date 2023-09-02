@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Gantt Chart Generator</title>
+</head>
+<body>
+    <h1>Gantt Chart Generator</h1>
+    
+    <form method="POST">
+        <label for="activity">Activity:</label>
+        <input type="text" name="activity" required><br>
+
+        <label for="status">Status:</label>
+        <input type="text" name="status" required><br>
+
+        <label for="completion_percentage">Completion Percentage:</label>
+        <input type="number" name="completion_percentage" required><br>
+
+        <label for="start_date">Start Date:</label>
+        <input type="date" name="start_date" required><br>
+
+        <label for="end_date">End Date:</label>
+        <input type="date" name="end_date" required><br>
+
+        <button type="submit">Generate Gantt Chart</button>
+    </form>
+
+    {% if gantt_chart %}
+    <h2>Gantt Chart</h2>
+    <div id="gantt-chart">
+        {{ gantt_chart | safe }}
+    </div>
+    {% endif %}
+</body>
+</html>
