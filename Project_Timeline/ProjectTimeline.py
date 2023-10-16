@@ -1,94 +1,60 @@
-from flask import Flask
-
-import pandas as pd
-import matplotlib.pyplot as plt
-from matplotlib.dates import date2num
-import datetime
-import random
-
+from flask import Flask, request, render_template
+import plotly.figure_factory as ff
+from datetime import datetime
 
 app = Flask(__name__)
 
-# Initialize Matplotlib in the main thread
-plt.figure(figsize=(10, 6))
-plt.xlabel('Calendar dates')
-plt.ylabel('Activities')
-plt.title('Activity timeline')
+# List to store activities
+activities = []
 
-def load_excel_data(filepath):
-    df = pd.read_excel(filepath)
-    return df
+@app.route('/timeline', methods=['GET', 'POST'])
+def index():
+    if request.method == 'POST':
+        if 'add_activity' in request.form:
+            # Add activity to the list
+            activity = request.form['activity']
+            status = request.form['status']
+            completion_percentage = int(request.form['completion_percentage'])
+            start_date = datetime.strptime(request.form['start_date'], '%Y-%m-%d')
+            end_date = datetime.strptime(request.form['end_date'], '%Y-%m-%d')
 
-def generate_timeline_chart(data):
-    # logic to draw the chart.
+            activities.append({
+                'activity': activity,
+                'status': status,
+                'completion_percentage': completion_percentage,
+                'start_date': start_date,
+                'end_date': end_date
+            })
+        elif 'generate_chart' in request.form:
+            # Generate Gantt chart
+            gantt_chart = generate_gantt_chart(activities)
+            return render_template('index.html', gantt_chart=gantt_chart, activities=activities)
 
-# # Sample Excel data (replace with your actual data)
-#     data = {
-#         'Activity name': ['Task A', 'Task B', 'Task C'],
-#         'Start date': ['2023-09-01', '2023-09-02', '2023-09-03'],
-#         'End date': ['2023-09-04', '2023-09-05', '2023-09-06'],
-#         '% Complete': [random.randint(0, 100), random.randint(0, 100), random.randint(0, 100)],
-#         'Status': ['In Progress', 'Blocked', 'Completed']
-#     }
+    return render_template('index.html', gantt_chart=None, activities=activities)
 
-#     # Convert dates to datetime objects
-#     data['Start date'] = pd.to_datetime(data['Start date'])
-#     data['End date'] = pd.to_datetime(data['End date'])
+def generate_gantt_chart(activities):
+    # Create a Gantt chart using Plotly
+    df = []
 
-#     # Define the 10-day date range
-#     start_date = min(data['Start date'])
-#     end_date = start_date + datetime.timedelta(days=10)
+    for activity in activities:
+        df.append(dict(Task=activity['activity'],
+                        Start=activity['start_date'],
+                        Finish=activity['end_date'],
+                        Completion_Percentage=activity['completion_percentage'],
+                        Status=activity['status']))
 
-#     # Create a figure and axis
-#     fig, ax = plt.subplots(figsize=(10, 8))
+    # Collect unique statuses for color mapping
+    unique_statuses = set(activity['status'] for activity in activities)
 
-#     # Create a horizontal bar chart (Gantt chart) with activity names on the y-axis
-#     for i, activity in enumerate(data['Activity name']):
-#         ax.barh(activity, width=data['End date'][i] - data['Start date'][i], left=data['Start date'][i], label=activity)
-#         # Display % Complete and Status as annotations on the bars
-#         ax.annotate(f'% Complete: {data["% Complete"][i]}%\nStatus: {data["Status"][i]}',
-#                     xy=(data['Start date'][i], i), xytext=(5, 7), textcoords='offset points')
+    # Generate colors dynamically for unique statuses
+    colors = {status: 'rgb(' + str(hash(status) % 256) + ', ' + str(hash(status) % 256) + ', ' + str(hash(status) % 256) + ')' for status in unique_statuses}
 
-#     # Set y-axis label and title for the main subplot
-#     ax.set_ylabel('Activity Names')
-#     ax.set_title('Activity Timeline')
+    fig = ff.create_gantt(df, colors=colors, index_col='Status', show_colorbar=True, group_tasks=True)
 
-#     # Add date headers at the top of the chart with the desired format
-#     ax2 = ax.secondary_xaxis('top')
-#     ax2.set_xlabel('Calendar Dates')
+    # Convert the figure to HTML
+    gantt_chart = fig.to_html(full_html=False)
 
-#     # Define the date_ticks variable with the date range
-#     date_ticks = pd.date_range(start=start_date, end=end_date)
-
-#     # Set x-axis ticks and labels for the secondary x-axis
-#     ax2.set_xticks(date_ticks)
-#     ax2.set_xticklabels(date_ticks.strftime('%Y-%m-%d'), rotation=45)
-
-#     # Remove the bottom x-axis
-#     ax.xaxis.set_visible(False)
-
-# plot logic end
-
-    # Display the chart
-    plt.legend()
-    plt.tight_layout()
-    plt.show()
-    # Save the chart as an image
-    plt.savefig('timeline_chart.png')
-
-Excelfile = "/Users/yogesh.shinde/Library/CloudStorage/OneDrive-ServiceNow/Learning & Development/Python_Dev/Timeline.xlsx"
-
-@app.route('/timeline')
-def generate_timeline():
-    try:
-        excel_data = load_excel_data(Excelfile)
-        generate_timeline_chart(excel_data)
-        return 'Timeline chart generated'
-    except Exception as e:
-        print(f'Error occurred: {str(e)}')
-        return 'Error occurred'
+    return gantt_chart
 
 if __name__ == '__main__':
     app.run(debug=True)
-
-

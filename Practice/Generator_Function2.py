@@ -21,7 +21,10 @@ def read_excel_rows_generator(excel_file_path):
     excel_file.close()
 
 
-excel_file_path = "/Users/yogesh.shinde/Library/CloudStorage/OneDrive-ServiceNow/Learning & Development/Python_Dev/Timeline.xlsx"
+excel_file_path = '/Users/yogesh.shinde/Library/CloudStorage/OneDrive-ServiceNow/Learning & Development/Dev_Public/Project_Timeline/Timeline.xlsx'
 for row in read_excel_rows_generator(excel_file_path):
     # Process each row here
     print(row)
+
+    d = {}
+    d.values
