@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>IP Address Parser</title>
+</head>
+<body>
+  <textarea id="textInput" rows="10" cols="40">
+Here are some IP addresses:
+192.168.1.1
+10.0.0.1
+Invalid IP: 256.256.256.256
+Another IP: 172.16.0.1 
+bahgfdereiuyregr
+wihnreiuihfhkl
+  </textarea>
+  <button onclick="parseIPAddresses()">Parse IP Addresses</button>
+  <div id="result"></div>
+
+  <script>
+    function parseIPAddresses() {
+      const textInput = document.getElementById("textInput").value;
+      const ipRegex = /\b(?:\d{1,3}\.){3}\d{1,3}\b/g;
+      const matches = textInput.match(ipRegex);
+
+      if (matches) {
+        const resultDiv = document.getElementById("result");
+        resultDiv.innerHTML = "<strong>Discovered IP Addresses:</strong><br>";
+
+        for (const match of matches) {
+          resultDiv.innerHTML += match + "<br>";
+        }
+      } else {
+        alert("No IP addresses found.");
+      }
+    }
+  </script>
+</body>
+</html>

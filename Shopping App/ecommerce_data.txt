@@ -1,0 +1,4 @@
+1,'Toe separator','Health',199.0
+2,'Fitband','Health',22000.0
+3,'Nike shoes','fitness',4999.0
+
