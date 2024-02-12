@@ -4,7 +4,6 @@ import pkgutil
 all_modules = list(pkgutil.iter_modules())
 
 # Define the file path and name
-# file_path = "/path/to/desired_directory/module_list.txt"
 file_path = "/Users/yogesh.shinde/Library/CloudStorage/OneDrive-ServiceNow/Learning & Development/Caltech AI ML/Python Refresher/python3_module_list.txt"
 
 # Open the specified text file to write module names
