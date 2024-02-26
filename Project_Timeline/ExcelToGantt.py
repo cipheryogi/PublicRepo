@@ -2,6 +2,10 @@ import pandas as pd
 from datetime import datetime
 from flask import Flask, request, render_template
 from flask_sqlalchemy import SQLAlchemy
+import sys
+
+sys.path.append("/Users/yogesh.shinde/Library/Python/3.11/lib/python/site-packages")
+
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.db'

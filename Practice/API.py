@@ -1,12 +1,16 @@
-from flask import Flask
+from flask import Flask, jsonify
 
-# initialize the app
 app = Flask(__name__)
 
-#Add a route that will handle PUT requests. In this example, let's create a route called 
+# Define a route for the root URL
 @app.route('/')
-def hello():
-    return 'Hello, World! This is a simple API.'
+def home():
+    return 'Hello, World!'
+
+# Define a route for the /api endpoint
+@app.route('/api')
+def api():
+    return jsonify({'message': 'Welcome to the API!'})
 
 if __name__ == '__main__':
     app.run(debug=True)
