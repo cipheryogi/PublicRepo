@@ -1,11 +1,21 @@
-import sys
-import random
-# Add the desired path to sys.path
-# sys.path.append("/Users/yogesh.shinde/Library/Python/3.11/lib/python/site-packages")
+'''For drawing graphics in Python, you can use the turtle module. The turtle module provides a simple drawing library that is great for beginners and allows you to draw various shapes, including straight lines, using a pen-like interface.
+import turtle'''
 
-import matplotlib.pyplot as plt
+# Create a turtle screen
+screen = turtle.Screen()
 
-random_numbers = [random.randint(0, 99) for _ in range(100)]
+# Create a turtle
+pen = turtle.Turtle()
 
-plt.plot(random_numbers, marker='o')
-plt.show()
+# Move the pen to the starting position
+pen.penup()
+pen.goto(-100, 0)  # Adjust the coordinates as needed
+
+# Lower the pen to start drawing
+pen.pendown()
+
+# Draw a straight line
+pen.forward(200)  # Adjust the length as needed
+
+# Close the turtle graphics window when clicked
+screen.exitonclick()

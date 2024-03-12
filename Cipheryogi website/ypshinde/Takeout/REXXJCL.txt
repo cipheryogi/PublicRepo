@@ -1,0 +1,208 @@
+Following JCL executes the REXX ‘DSREPORT’ to print the attributes of given libraries (In INDD dataset). The output is UPDATEDD dataset.
+
+ 
+
+***************************** Top of Data ******************************
+
+//VNDJ29A   JOB (DIELD),'REXX EXEC',                                 
+
+//    MSGCLASS=T,CLASS=S,NOTIFY=&SYSUID                                 
+
+//********************************************************************  
+
+//* THIS REXX PRINTS THE REPORT OF OBSOLETE CHANGEMAN LIBRARIES      *  
+
+//* AUTHOR - YOGESH (VNDJ29)                                         *  
+
+//********************************************************************  
+
+//STEP020     EXEC PGM=IKJEFT1A,DYNAMNBR=20,COND=(4,LT)                 
+
+//SYSTSPRT    DD   SYSOUT=*                                             
+
+//SYSOUT      DD   SYSOUT=*                                             
+
+//SYSTERM     DD   SYSOUT=*                                             
+
+//SYSPRINT    DD   SYSOUT=*                                             
+
+//SYSEXEC     DD   DSN=VNDJ29.CMAN.HISJ.REXX,DISP=SHR                   
+
+//ISPPROF     DD   DSN=&TEST,DISP=(,DELETE,DELETE),                     
+
+//            UNIT=SYSDA,SPACE=(TRK,(5,5,1),RLSE,,ROUND),               
+
+//            DCB=(LRECL=80,RECFM=FB,BLKSIZE=3120)                      
+
+//ISPLOG      DD   DSN=&TEST,DISP=(,DELETE,DELETE),                     
+
+//            UNIT=SYSDA,SPACE=(CYL,(5,5),RLSE,,ROUND),                 
+
+//            DCB=(LRECL=125,RECFM=VB,BLKSIZE=129)                      
+
+//ISPPLIB     DD   DISP=SHR,DSN=SYS1.SISPPENU                           
+
+//ISPSLIB     DD   DISP=SHR,DSN=SYS1.SISPSENU                        
+
+//ISPMLIB     DD   DISP=SHR,DSN=SYS1.SISPMENU                        
+
+//ISPTLIB     DD   DISP=SHR,DSN=SYS1.SISPTENU                        
+
+//INDD        DD   DSN=VNDJ29.INDD,DISP=SHR                          
+
+//UPDATEDD    DD   DSN=VNDJ29.DSREPORT,DISP=(MOD,CATLG,DELETE)       
+
+//SYSTSIN     DD   *                                                 
+
+  %DSREPORT                                                          
+
+/*                                                                   
+
+//*******************************************************************
+
+ 
+
+REXX routine is given below – 
+
+ 
+
+*********************** Top of Data ******************************
+
+/*REXX*/                                                          
+
+/*--------------------------------------------------------------*/
+
+/* WRITE THE HEADER RECORD FIRST                                */
+
+/*--------------------------------------------------------------*/
+
+"ALLOC DA('VNDJ29.DSREPORT') F(UPDATEDD) MOD REUSE"               
+
+HDR1 = '         NAME         '                                   
+
+HDR2 = '|CREATE-DATE|'                                            
+
+HDR3 = ' LRECL|'                                                  
+
+HDR4 = ' BLKSIZE|'                                                
+
+HDR5 = ' SPACE-UNIT|'                                             
+
+HDR6 = ' PRIMARY|'                                                
+
+HDR7 = ' SECONDARY|'                                              
+
+HDR8 = ' EXTENTS|'                                                
+
+HDR9 = ' USED|'                                                   
+
+HDR10 = 'MEMBERS|'                                                
+
+PUSH HDR1 HDR2 HDR3 HDR4 HDR5 HDR6 HDR7 HDR8 HDR9 HDR10           
+
+"EXECIO 1 DISKW UPDATEDD (FINIS"                                  
+
+/*--------------------------------------------------------------*/
+
+/* READ FILE INDD AND DISPLAY/ WRITE EACH RECORD                */
+
+/*--------------------------------------------------------------*/
+
+"ALLOC DA('VNDJ29.INDD') F(INDD) SHR REUSE"                       
+
+DONE = 'NO'                                                       
+
+CNT = 0                                                           
+
+/*--------------------------------------------------------------*/
+
+/* PROCESS AND WRITE THE DATA                                   */
+
+/* NOTE - SYSMEMBERS WORKS ONLY WHEN "DIRECTORY" IS SPECIFIED   */
+
+/*--------------------------------------------------------------*/
+
+DO WHILE DONE = 'NO'                                              
+
+   "EXECIO 1 DISKR INDD"                                          
+
+   IF RC = 0 THEN          /*  RECORD WAS READ */                 
+
+      DO                                                          
+
+        PULL RECORD                                               
+
+        CNT = CNT + 1                                             
+
+        INPUTPDS="'" || RECORD || "'"                             
+
+        INFOD = "DIRECTORY"                                       
+
+        X = LISTDSI(INPUTPDS INFOD)                               
+
+        STRING = SYSCREATE     /*  DATASET CREATION DATE  */      
+
+        DELSLASH = DELSTR(STRING,5,1)                             
+
+        SUB = SUBSTR(DELSLASH,3,5)                                
+
+        MMDDYY = DATE('U',SUB,'J')                                
+
+/*==============================================================*/
+
+/*                    PROCESSING                                */
+
+/* MOD REUSE WILL APPEND DATA. SHR REUSE OR OLD WILL OVERWRITE  */
+
+/* "ALLOC DA('VNDJ29.UPDATEDD') F(UPDATEDD) MOD REUSE"          */
+
+/*==============================================================*/
+
+        PUSH SYSDSNAME '|' MMDDYY '|    ' SYSLRECL '|     ' ,     
+
+        SYSBLKSIZE '|   ' SYSALLOC '    |' SYSPRIMARY '    |' ,   
+
+        SYSSECONDS '        |' SYSEXTENTS '        |' SYSUSED ,   
+
+        '     |' SYSMEMBERS                                       
+
+        "EXECIO 1 DISKW UPDATEDD (FINIS"                          
+
+      END                                                         
+
+   ELSE                                                           
+
+      DONE = 'YES'                                                
+
+END                                                               
+
+"EXECIO 0 DISKR INDD (FINIS"                                      
+
+/*==============================================================*/
+
+EXIT                                                              
+
+/*==============================================================*/
+
+ 
+
+Input file is 22 byte long –
+
+=COLS> ----+----1----+----2--                                                  
+
+****** ***************************** Top of Data ******************************
+
+000001 P9B0.CP000000.P9B1.BND                                                  
+
+000002 P9B0.CP000000.P9B1.CPG                                                  
+
+000003 P9B0.CP000000.P9B1.CPI                                                  
+
+000004 P9B0.CP000000.P9B1.CPV                                                  
+
+000005 P9B0.CP000000.P9B1.CPY                                                  
+
+ 
+
+Output file is a report with record length = 150.
+
