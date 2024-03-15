@@ -21,6 +21,6 @@ if response.status_code == 200:
     latest_timestamp = list(latest_data.keys())[0]
     latest_price = latest_data[latest_timestamp]['1. open']
     
-    print(f"The latest price of {symbol} is ${latest_price}")
+    print(f"The latest price of {symbol} share is ${latest_price} on {latest_timestamp}")
 else:
     print(f"Failed to fetch data. Status code: {response.status_code}")
