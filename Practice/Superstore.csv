@@ -1,4 +1,4 @@
-Item_Identifier,Item_Weight,Item_Fat_Content,Item_Visibility,Item_Type,Item_MRP,Outlet_Identifier,Outlet_Establishment_Year,Outlet_Size,Outlet_Location_Type,Outlet_Type,Item_Outlet_Sales,Profit
+tItem_Identifier,Item_Weight,Item_Fat_Content,Item_Visibility,Item_Type,Item_MRP,Outlet_Identifier,Outlet_Establishment_Year,Outlet_Size,Outlet_Location_Type,Outlet_Type,Item_Outlet_Sales,Profit
 FDA15,9.3,Low Fat,0.016047301,Dairy,249.8,OUT049,1999,Medium,Tier 2,Supermarket Type1,3735.138,11.5
 DRC01,5.92,Regular,0.019278216,Soft Drinks,48.3,OUT018,2009,Medium,Tier 2,Supermarket Type2,443.4228,14.3
 FDN15,17.5,Low Fat,0.016760075,Meat,141.6,OUT049,1999,Medium,Tier 2,Supermarket Type1,2097.27,14.5

@@ -1,7 +1,4 @@
-class Student:
-  def __init__(self,name,age):
-    self.name = name
-    self.age = age
+def addition(x, y = 4, z = 10):
+  return x + y + z
 
-s = Student("Student1",20)
-print(s.name,s.age)
+print(addition(3, z = 3))
