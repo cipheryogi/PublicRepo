@@ -1,1 +1,1 @@
-print(7 and 2)
+print('abc 19'.isalnum())
