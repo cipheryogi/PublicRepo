@@ -45,5 +45,5 @@ def scan_git_repo(repo_path):
         print("No passwords found.")
 
 # Replace 'path_to_your_git_repo' with the path to your Git repository
-git_repo_path = 'https://github.com/cipheryogi/Dev_Public'
+git_repo_path = 'https://github.com/cipheryogi/PublicRepo/tree/main/Practice'
 scan_git_repo(git_repo_path)
